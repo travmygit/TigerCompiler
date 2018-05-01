@@ -28,22 +28,8 @@ A compiler can be a big program; careful attention to modules and interfaces pre
 3. All functions shall have prototypes, and the C compiler shall be told to warn about uses of functions without prototypes.
 3. 每个函数都要有函数原型
 4. We will #include "util.h" in each file:
-
-    /* util.h */
-    #include <assert.h>
-
-    typedef char *string;
-    string String(char *);
-
-    typedef char bool;
-    #define TRUE 1
-    #define FALSE 0
-
-    void *checked_malloc(int);
-
 The inclusion of assert.h encourages the liberal use of assertion by the C programmer.
-4. 在每个文件中都 #include "util.h"，
-鼓励大家在编码的时候多多使用assertion
+4. 在每个文件中都 #include "util.h"，鼓励大家在编码的时候多多使用assertion
 5. The string type means a heap-allocated string that will not be modified after its initial creation. The String function builds a heap-allocated string from a C-type character pointer(just like the standard C library function strdup). Functions that take strings as arguments assume that the contents will never change.
 5. string类型的字符串意味着这是个分配在堆上的字符串，是类似cpp的不可变字符串，所有把string当作参数的函数都不会修改string的内容
 6. C's malloc function return NULL if there is no memory left. The Tiger compiler will not have sophisticated memory management to deal with this problem. Instead, it will never call malloc directly, but call only our own function, checked_malloc, which guarantees never to return NULL:
