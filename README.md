@@ -8,3 +8,5 @@ I just want to implement the tiger.
 
 # Complete
 [+] CHAPTER ONE
+[+] CHAPTER TWO
+[-] CHAPTER THREE
