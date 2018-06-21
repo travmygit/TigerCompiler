@@ -1,20 +1,24 @@
-lextest: driver.o lex.yy.o errormsg.o util.o
-	cc -g -o lextest driver.o lex.yy.o errormsg.o util.o
+# variable
+OBJECTS = lex.yy.o errormsg.o util.o
 
-driver.o: driver.c tokens.h errormsg.h util.h
-	cc -g -c driver.c
+# executable
+all: lextest
+.PHONY: all
 
-errormsg.o: errormsg.c errormsg.h util.h
-	cc -g -c errormsg.c
+lextest: lextest.o $(OBJECTS)
+	cc -g -o $@ lextest.o $(OBJECTS)
 
+# objects
+lextest.o: lextest.c tokens.h errormsg.h util.h
 lex.yy.o: lex.yy.c tokens.h errormsg.h util.h
-	cc -g -c lex.yy.c
+errormsg.o: errormsg.c errormsg.h util.h
+util.o: util.c util.h
 
+# lex
 lex.yy.c: tiger.lex
 	lex tiger.lex
 
-util.o: util.c util.h
-	cc -g -c util.c
 
+.PHONY: clean
 clean:
-	rm -f util.o driver.o lex.yy.o lex.yy.c errormsg.o
+	rm -f $(OBJECTS) lex.yy.c lextest

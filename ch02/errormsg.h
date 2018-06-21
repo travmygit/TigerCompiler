@@ -1,6 +1,6 @@
 extern bool EM_anyErrors;
 
-void EM_newline(void);
+void EM_newline(void); // 记录行号以及对应的位置
 
 extern int EM_tokPos;
 
