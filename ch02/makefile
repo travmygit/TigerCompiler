@@ -21,4 +21,4 @@ lex.yy.c: tiger.lex
 
 .PHONY: clean
 clean:
-	rm -f $(OBJECTS) lex.yy.c lextest
+	rm -f *.o lex.yy.c lextest
