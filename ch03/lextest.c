@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "util.h"
 #include "errormsg.h"
-#include "tokens.h"
+#include "y.tab.h"
 
 YYSTYPE yylval;
 
@@ -19,7 +19,7 @@ string toknames[] = {
 
 
 string tokname(tok) {
-  return tok<257 || tok>299 ? "BAD_TOKEN" : toknames[tok-257];
+  return tok<258 || tok>300 ? "BAD_TOKEN" : toknames[tok-258];
 }
 
 int main(int argc, char **argv) {

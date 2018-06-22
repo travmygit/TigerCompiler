@@ -1,7 +1,7 @@
 %{
 #include <string.h>
 #include "util.h"
-#include "tokens.h"
+#include "y.tab.h"
 #include "errormsg.h"
 
 /* comments allow to be nested, the more nested, the higher comment level */

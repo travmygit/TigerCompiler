@@ -5,47 +5,47 @@ typedef union  {
 	} YYSTYPE;
 extern YYSTYPE yylval;
 
-# define ID 257
-# define STRING 258
-# define INT 259
-# define COMMA 260
-# define COLON 261
-# define SEMICOLON 262
-# define LPAREN 263
-# define RPAREN 264
-# define LBRACK 265
-# define RBRACK 266
-# define LBRACE 267
-# define RBRACE 268
-# define DOT 269
-# define PLUS 270
-# define MINUS 271
-# define TIMES 272
-# define DIVIDE 273
-# define EQ 274
-# define NEQ 275
-# define LT 276
-# define LE 277
-# define GT 278
-# define GE 279
-# define AND 280
-# define OR 281
-# define ASSIGN 282
-# define ARRAY 283
-# define IF 284
-# define THEN 285
-# define ELSE 286
-# define WHILE 287
-# define FOR 288
-# define TO 289
-# define DO 290
-# define LET 291
-# define IN 292
-# define END 293
-# define OF 294
-# define BREAK 295
-# define NIL 296
-# define FUNCTION 297
-# define VAR 298
-# define TYPE 299
+#define ID 258
+#define STRING 259
+#define INT 260
+#define COMMA 261
+#define COLON 262
+#define SEMICOLON 263
+#define LPAREN 264
+#define RPAREN 265
+#define LBRACK 266
+#define RBRACK 267
+#define LBRACE 268
+#define RBRACE 269
+#define DOT 270
+#define PLUS 271
+#define MINUS 272
+#define TIMES 273
+#define DIVIDE 274
+#define EQ 275
+#define NEQ 276
+#define LT 277
+#define LE 278
+#define GT 279
+#define GE 280
+#define AND 281
+#define OR 282
+#define ASSIGN 283
+#define ARRAY 284
+#define IF 285
+#define THEN 286
+#define ELSE 287
+#define WHILE 288
+#define FOR 289
+#define TO 290
+#define DO 291
+#define LET 292
+#define IN 293
+#define END 294
+#define OF 295
+#define BREAK 296
+#define NIL 297
+#define FUNCTION 298
+#define VAR 299
+#define TYPE 300
 
