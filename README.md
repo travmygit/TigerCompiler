@@ -13,4 +13,6 @@ I just want to implement the tiger.
 
 [+] CHAPTER TWO
 
-[-] CHAPTER THREE
+[+] CHAPTER THREE
+
+[-] CHAPTER FOUR
