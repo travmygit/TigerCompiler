@@ -17,6 +17,10 @@ void yyerror(char *s) {
 	string sval;
   }
 
+%nonassoc LOW
+%nonassoc TYPE FUNCTION
+%nonassoc ID
+%nonassoc LBRACK
 %nonassoc DO OF
 %nonassoc THEN
 %nonassoc ELSE
@@ -68,11 +72,10 @@ exp: lvalue
    | LET decs IN expseq END
    | LPAREN expseq RPAREN
 
-lvalue: ID lvalue_extension
-
-lvalue_extension:
-                | DOT ID lvalue_extension
-                | LBRACK exp RBRACK lvalue_extension
+lvalue: ID
+      | ID LBRACK exp RBRACK
+      | lvalue LBRACK exp RBRACK
+      | lvalue DOT ID
 
 func_call: ID LPAREN explist RPAREN
 
@@ -112,9 +115,12 @@ array_create: ID LBRACK exp RBRACK OF exp
 decs:
     | decs dec
 
-dec: tydec
+dec: tydeclist
    | vardec
-   | fundec
+   | fundeclist
+
+tydeclist: tydec %prec LOW
+         | tydec tydeclist
 
 tydec: TYPE ID EQ ty
 
@@ -132,6 +138,9 @@ tyfield: ID COLON ID
 
 vardec: VAR ID ASSIGN exp
       | VAR ID COLON ID ASSIGN exp
+
+fundeclist: fundec %prec LOW
+          | fundec fundeclist
 
 fundec: FUNCTION ID LPAREN tyfields RPAREN EQ exp
       | FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp

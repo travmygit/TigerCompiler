@@ -154,6 +154,25 @@ tips: remember the value of expseq is the value of last element
 
 tips: $default $表示EOF
 
+**另外一种方法----为了便于后面的抽象语法树的数据结构**
+
+    lvalue: ID
+        | ID LBRACK exp RBRACK
+        | lvalue LBRACK exp RBRACK
+        | lvalue DOT ID
+
+这里还需要修改一下优先级
+
+    %nonassoc ID
+    %nonassoc LBRACK
+
+这样的其实也是可以解决数组创建和变量的冲突了，之所以还需要额外的优先级控制，是因为要解决lvalue内部自己的冲突，在遇到
+
+    ID .
+    ID . LBRACK
+
+应该继续shift将他当作数组元素
+
 ### 你想知道的
 为什么要 %nonassoc DO OF，我们一个一个来，一共有三个
 
@@ -169,5 +188,25 @@ tips: $default $表示EOF
 
     exp: FOR ID ASSIGN exp TO exp DO exp .
     arith_exp: exp . PLUS exp
+
+### 最后谈一谈mutual declare
+自定义的type和function都可以mutual declare互相定义，因此在以后的实现中我们会把连续的type定义或者function定义合在一起，怎么合在一起呢？就是使用一个list结构把连续的定义连在一起。
+
+那么这就是为什么在语法里使用的是
+
+    dec: tydeclist
+       | vardec
+       | fundeclist
+
+你可能会有疑问为什么我的语法里写了这样的一个东西
+
+    tydeclist: tydec %prec LOW
+
+而且在优先级那里又有这样的东西
+
+    %nonassoc LOW
+    %nonassoc TYPE FUNCTION
+
+给个小提示：遇到连续定义的时候是应该shift or reduce?
 
 > 也许你可以给一个star?
