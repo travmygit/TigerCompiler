@@ -1,0 +1,27 @@
+{
+    "files.associations": {
+        "__bit_reference": "cpp",
+        "__functional_base": "cpp",
+        "atomic": "cpp",
+        "bitset": "cpp",
+        "chrono": "cpp",
+        "functional": "cpp",
+        "iterator": "cpp",
+        "limits": "cpp",
+        "locale": "cpp",
+        "memory": "cpp",
+        "ratio": "cpp",
+        "system_error": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "semant.h": "c",
+        "ios": "c",
+        "initializer_list": "c",
+        "string": "c",
+        "string_view": "c",
+        "__functional_base_03": "c",
+        "__tuple": "c",
+        "utility": "c",
+        "typeinfo": "cpp"
+    }
+}
