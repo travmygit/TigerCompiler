@@ -115,7 +115,7 @@ explist:                  { $$ = NULL; }
        | explist_nonempty { $$ = $1; }
 
 explist_nonempty: exp                        { $$ = A_ExpList($1, NULL); }
-                | explist_nonempty COMMA exp { $$ = A_ExpList($3, $1); }
+                | exp COMMA explist_nonempty { $$ = A_ExpList($1, $3); }
 
 arith_exp: exp PLUS exp   { $$ = A_OpExp(EM_tokPos, A_plusOp, $1, $3); }
          | exp MINUS exp  { $$ = A_OpExp(EM_tokPos, A_minusOp, $1, $3); }
@@ -138,14 +138,14 @@ record_create_list: { $$ = NULL; }
                   | record_create_list_nonempty { $$ = $1; }
 
 record_create_list_nonempty: record_create_field { $$ = A_EfieldList($1, NULL); }
-                           | record_create_list_nonempty COMMA record_create_field { $$ = A_EfieldList($3, $1); }
+                           | record_create_field COMMA record_create_list_nonempty { $$ = A_EfieldList($1, $3); }
 
 record_create_field: ID EQ exp { $$ = A_Efield(S_Symbol($1), $3); }
 
 array_create: ID LBRACK exp RBRACK OF exp { $$ = A_ArrayExp(EM_tokPos, S_Symbol($1), $3, $6); }
 
 decs:          { $$ = NULL; }
-    | decs dec { $$ = A_DecList($2, $1); }
+    | dec decs { $$ = A_DecList($1, $2); }
 
 dec: tydeclist  { $$ = $1; }
    | vardec     { $$ = $1; }
@@ -164,7 +164,7 @@ tyfields:                   { $$ = NULL; }
         | tyfields_nonempty { $$ = $1; }
 
 tyfields_nonempty: tyfield                         { $$ = A_FieldList($1, NULL); }
-                 | tyfields_nonempty COMMA tyfield { $$ = A_FieldList($3, $1); }
+                 | tyfield COMMA tyfields_nonempty { $$ = A_FieldList($1, $3); }
 
 tyfield: ID COLON ID { $$ = A_Field(EM_tokPos, S_Symbol($1), S_Symbol($3)); }
 
@@ -178,4 +178,4 @@ fundec: FUNCTION ID LPAREN tyfields RPAREN EQ exp          { $$ = A_Fundec(EM_to
       | FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp { $$ = A_Fundec(EM_tokPos, S_Symbol($2), $4, S_Symbol($7), $9); }
 
 expseq: exp                  { $$ = A_ExpList($1, NULL); }
-      | expseq SEMICOLON exp { $$ = A_ExpList($3, $1); }
+      | exp SEMICOLON expseq { $$ = A_ExpList($1, $3); }

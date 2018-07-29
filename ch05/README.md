@@ -1,21 +1,23 @@
-抽象语法树貌似没有什么可讲的...
+类型检查真是写得头晕。。。
 
-因为和类型检查是分开来做的，所以生产抽象语法树也就是对每个语法规则调用一下构造函数...
+建议先把几个工具函数写了：
 
-你可能想知道 absyn_root 是干嘛的...
+actual_ty() 把 Ty_name 转为 built-in type
 
-但其实你看下 parse.c 你就知道这其实是树的根...
+actual_eq() 类型检查经常用到的判断两种类型是否相等
 
-现在的代码里有 lextest.c parsetest.c absyntest.c 前面两个和以前的作用一样
+判断相等需要注意：
 
-absyntest.c 则是将树打印出来的 driver 
+1. 内置的类型只有简单的几个：Ty_int Ty_string Ty_void Ty_nil
+2. 稍微复杂的类型：Ty_record Ty_array
+3. 比较Ty_record Ty_array需要判断两者的 reference 是否相同的
 
-parse.[ch] 是一个 parse 函数，和 parsetest.c 里的稍有不同
+比较值得学习的点：
 
-哦对了，我还为每个头文件都加了guard!
+1. S_table 符号表是一个hash表，用S_symbol这个结构指针的指针值(4B)作KEY
 
-貌似没什么可交待了的
+修改的地方：
 
-留下一个[TODO]
+1. tiger.y 把所有的左递归变成了右递归，这是为了让parse解析的顺序与程序写的顺序一致，如果不这样干，可能会导致程序后面定义的变量会被安排到前面，会造成许多困扰
 
-TODO: 改造一下 prabsyn.c 将树以从上到下的形式打印出来
+建议多看看附录吧
