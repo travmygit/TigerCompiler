@@ -1,6 +1,7 @@
 # variable
 OBJECTS = lex.yy.o y.tab.o errormsg.o util.o absyn.o prabsyn.o symbol.o \
-          table.o parse.o env.o semant.o types.o
+          table.o parse.o env.o semant.o types.o mipsframe.o temp.o \
+		  translate.o escape.o
 
 # executable
 all: lextest parsetest absyntest typechecktest
@@ -16,7 +17,7 @@ absyntest: absyntest.o $(OBJECTS)
 	cc -g -o $@ absyntest.o $(OBJECTS)
 
 typechecktest: typechecktest.o $(OBJECTS)
-	cc -o $@ typechecktest.o $(OBJECTS) -g
+	cc -o $@ typechecktest.o $(OBJECTS)
 
 # objects
 errormsg.o: errormsg.c errormsg.h util.h
@@ -49,6 +50,14 @@ typechecktest.o: typechecktest.c errormsg.h util.h absyn.h symbol.h
 env.o: env.c env.h
 semant.o: semant.c semant.h
 types.o: types.c types.h
+
+# frame
+mipsframe.o: frame.h
+temp.o: temp.h
+escape.o: escape.h
+
+# translate
+translate.o: translate.h
 
 .PHONY: clean
 clean:
