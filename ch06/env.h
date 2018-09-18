@@ -19,8 +19,8 @@ struct E_enventry_ {
 };
 
 /* constructor for value environment */
-E_enventry E_VarEntry(Ty_ty ty);
-E_enventry E_FunEntry(Ty_tyList formals, Ty_ty results);
+E_enventry E_VarEntry(Tr_access access, Ty_ty ty);
+E_enventry E_FunEntry(Tr_level level, Temp_label label, Ty_tyList formals, Ty_ty results);
 
 S_table E_base_tenv(); /* type environment */
 S_table E_base_venv(); /* value environment */
