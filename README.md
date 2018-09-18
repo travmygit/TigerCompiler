@@ -1,22 +1,27 @@
-# Tiger-Compiler
-Codes and Exercises with book &lt;&lt;Modern Compiler Implementation in C>>
+## Tiger-Compiler
+Codes and Exercises with book << Modern Compiler Implementation in C >>
 
-现代编译原理C语言描述
+![compilerbook](https://images-cn.ssl-images-amazon.com/images/I/41ui4h4faGL._AA218_.jpg)
 
-# About
-I just want to implement the tiger.
+## About
+Tiger compiler is a compiler for the tiger language.
 
-我打算挑战一下实现这个tiger编译器。
+Tiger is designed for studying the theory of compiler. More details for the language is described in the book's content and appendix.
 
-# Complete
-[+] CHAPTER ONE
+## Progress
+[1 - Introduction](./ch01/)
 
-[+] CHAPTER TWO
+[2 - Lexical Analysis](./ch02/)
 
-[+] CHAPTER THREE
+[3 - Parsing](./ch03/)
 
-[+] CHAPTER FOUR
+[4 - Abstract Syntax](./ch04/)
 
-[+] CHAPTER FIVE
+[5 - Semantic Analysis](./ch05/)
 
-[-] CHAPTER SIX
+[6 - Activation Records](./ch06/)
+
+[7 - Translation to Intermediate Code](./ch07/)
+
+## Contributor
+[trav](https://github.com/travmygit)
