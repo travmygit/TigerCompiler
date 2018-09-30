@@ -65,4 +65,7 @@ Tr_exp Tr_breakExp(Tr_exp brk);
 Tr_exp Tr_letExp(Tr_expList exps);
 Tr_exp Tr_arrayExp(Tr_exp size, Tr_exp init);
 
+// print ir tree
+void Tr_printTree(Tr_exp e);
+
 #endif

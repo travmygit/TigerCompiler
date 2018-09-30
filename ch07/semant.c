@@ -4,7 +4,6 @@
 #include "errormsg.h"
 #include "util.h"
 #include "translate.h"
-#include "frame.h"
 
 typedef struct expty_ {
     Tr_exp exp;
@@ -48,7 +47,8 @@ static bool actual_eq(Ty_ty source, Ty_ty target) {
 
 F_fragList SEM_transProg(A_exp exp) {
     S_table venv = E_base_venv(), tenv = E_base_tenv();
-    transExp(Tr_outermost(), venv, tenv, exp);
+    expty trans_exp = transExp(Tr_outermost(), venv, tenv, exp);
+    Tr_printTree(trans_exp.exp); // print the ir tree
     return Tr_getResult();
 }
 

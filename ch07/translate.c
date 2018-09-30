@@ -1,7 +1,7 @@
 #include "translate.h"
-#include "frame.h"
+#include <stdio.h>
 #include <stdlib.h>
-#include "tree.h"
+#include "printtree.h"
 
 struct Tr_level_ {
     Tr_level parent;
@@ -389,10 +389,10 @@ Tr_exp Tr_ifExp(Tr_exp test, Tr_exp then, Tr_exp elsee) {
 
 Tr_exp Tr_whileExp(Tr_exp test, Tr_exp done, Tr_exp body) {
     Temp_label test_label = Temp_newlabel(), body_label = Temp_newlabel();
-    return Tr_Ex(T_Eseq(T_Jump(T_Name(test_label), Temp_LabelList(test_label, NULL)),
-                    T_Eseq(T_Label(body_label), T_Eseq(unNx(body),
-                     T_Eseq(T_Label(test_label), T_Eseq(T_Cjump(T_eq, unEx(test), T_Const(0), unEx(done)->u.NAME, body_label), 
-                      T_Eseq(T_Label(unEx(done)->u.NAME), T_Const(0))))))));
+    return Tr_Nx(T_Seq(T_Jump(T_Name(test_label), Temp_LabelList(test_label, NULL)),
+                    T_Seq(T_Label(body_label), T_Seq(unNx(body),
+                     T_Seq(T_Label(test_label), T_Seq(T_Cjump(T_eq, unEx(test), T_Const(0), unEx(done)->u.NAME, body_label), 
+                      T_Label(unEx(done)->u.NAME)))))));
 }
 
 Tr_exp Tr_doneExp() {
@@ -406,12 +406,12 @@ Tr_exp Tr_forExp(Tr_exp lo, Tr_exp hi, Tr_exp done, Tr_exp body) {
     T_stm initialize = T_Move(T_Temp(i), unEx(lo));                                       // i = lo
     T_stm condition = T_Cjump(T_le, T_Temp(i), unEx(hi), body_label, unEx(done)->u.NAME); // i <= hi
 
-    return Tr_Ex(T_Eseq(initialize,
-    T_Eseq(T_Jump(T_Name(test_label), Temp_LabelList(test_label, NULL)),
-    T_Eseq(T_Label(body_label), T_Eseq(unNx(body),
-    T_Eseq(T_Move(T_Temp(i), T_Binop(T_plus, T_Temp(i), T_Const(1))),
-    T_Eseq(T_Label(test_label), T_Eseq(condition,
-    T_Eseq(T_Label(unEx(done)->u.NAME), T_Const(0))))))))));
+    return Tr_Nx(T_Seq(initialize,
+    T_Seq(T_Jump(T_Name(test_label), Temp_LabelList(test_label, NULL)),
+    T_Seq(T_Label(body_label), T_Seq(unNx(body),
+    T_Seq(T_Move(T_Temp(i), T_Binop(T_plus, T_Temp(i), T_Const(1))),
+    T_Seq(T_Label(test_label), T_Seq(condition,
+    T_Label(unEx(done)->u.NAME)))))))));
 }
 
 Tr_exp Tr_breakExp(Tr_exp brk) {
@@ -426,11 +426,11 @@ Tr_exp Tr_breakExp(Tr_exp brk) {
 
 Tr_exp Tr_letExp(Tr_expList exps) {
     Tr_expList l = exps;
-    T_exp t = unEx(l->head);
+    T_stm t = T_Exp(unEx(l->head));
     for(l = l->tail; l; l = l->tail) {
-        t = T_Eseq(T_Exp(unEx(l->head)), t);
+        t = T_Seq(T_Exp(unEx(l->head)), t);
     }
-    return Tr_Ex(t);
+    return Tr_Nx(t);
 }
 
 Tr_exp Tr_arrayExp(Tr_exp size, Tr_exp init) {
@@ -453,7 +453,10 @@ F_fragList Tr_getResult() {
     return global_string ? global_string : frag_list;
 }
 
-
+void Tr_printTree(Tr_exp e) {
+    T_stmList sl = T_StmList(unNx(e), NULL);
+    printStmList(stdout, sl);
+}
 
 
 

@@ -1,6 +1,4 @@
 #include "frame.h"
-#include "util.h"
-#include "tree.h"
 
 
 const int F_K = 6;         // not use here yet
