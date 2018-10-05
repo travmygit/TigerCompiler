@@ -44,13 +44,11 @@ struct Tr_exp_ {
 static Tr_exp Tr_Ex(T_exp ex);
 static Tr_exp Tr_Nx(T_stm nx);
 static Tr_exp Tr_Cx(patchList trues, patchList falses, T_stm stm);
-
 static T_exp unEx(Tr_exp e);
 static T_stm unNx(Tr_exp e);
 static struct Cx unCx(Tr_exp e);
 
 static F_fragList frag_list = NULL;
-static Tr_level outer = NULL; // most outer level
 
 Tr_accessList Tr_AccessList(Tr_access head, Tr_accessList tail) {
     Tr_accessList accessList = checked_malloc(sizeof(*accessList));
@@ -66,8 +64,15 @@ Tr_expList Tr_ExpList(Tr_exp head, Tr_expList tail) {
     return el;
 }
 
+static Tr_level outer = NULL; // 库函数和全局变量的level
+/**
+ * 每次调用都是返回同样的level 就是库函数和全局变量的level
+ * 
+ */
 Tr_level Tr_outermost() {
-    if(!outer) outer = Tr_newLevel(NULL, Temp_newlabel(), NULL);
+    if(!outer) {
+        outer = Tr_newLevel(NULL, Temp_newlabel(), NULL);
+    }
     return outer;
 }
 
@@ -80,8 +85,9 @@ static Tr_access Tr_Access(Tr_level level, F_access access) {
 
 static Tr_accessList make_formals(Tr_level level) {
 	Tr_accessList head = NULL, tail = NULL;
-	F_accessList al = F_formals(level->frame)->tail; // access parent frame's formals
-    
+	F_accessList al = F_formals(level->frame)->tail; // ignore head node, 不需要把static link也加进去
+                                                     // translate模块只需要在new frame的时候告诉frame添加一个static link
+                                                     // 自己不需要处理static link
 	for (; al; al = al->tail) {
 		Tr_access access = Tr_Access(level, al->head);
 		if (head) {
@@ -99,7 +105,7 @@ Tr_level Tr_newLevel(Tr_level parent, Temp_label name, U_boolList formals) {
     Tr_level level = checked_malloc(sizeof(*level));
     level->parent = parent;
     level->name = name;
-    level->frame = F_newFrame(name, U_BoolList(TRUE, formals)); // one room for new bp
+    level->frame = F_newFrame(name, U_BoolList(TRUE, formals)); // 在原formals的基础上多添加一个用作static link
     level->formals = make_formals(level);
     return level;
 }
@@ -215,10 +221,16 @@ Tr_exp Tr_noExp() {
     return Tr_Ex(T_Const(0));
 }
 
+/**
+ * translate frame access to simple varaible
+ * 
+ * note:
+ * access may be declared in outer level, so it needs to follow the static link to find.
+ */
 Tr_exp Tr_simpleVar(Tr_access access, Tr_level level) {
     T_exp fp = T_Temp(F_FP());
     Tr_level current_level = level;
-    // if the variable is not declared in this level, follow the static link
+    // F_formals returns all the formals in the frame, in which the head is static link
     if(access->level != current_level) {
         fp = F_Exp(F_formals(level->frame)->head, fp);
         current_level = current_level->parent;
@@ -235,6 +247,12 @@ Tr_exp Tr_subscriptVar(Tr_exp array, Tr_exp index) {
                         T_Binop(T_mul, unEx(index), T_Const(F_WORD_SIZE)))));
 }
 
+/**
+ * nil is treated as a record with no memory space
+ * 
+ * note:
+ * built-in function "initRecord" need a paramater, so called size, to allocate memory space
+ */
 static Temp_temp nil = NULL;
 Tr_exp Tr_nilExp() {
     if(!nil) {
@@ -249,6 +267,10 @@ Tr_exp Tr_intExp(int n) {
     return Tr_Ex(T_Const(n));
 }
 
+/**
+ * literal string, 在其他语言中被存储在堆里作为全局字符串
+ * 这里维护一个fraglist表示全局字符串, 为每个字符串生成label, 即memory address
+ */
 static F_fragList global_string = NULL;
 Tr_exp Tr_stringExp(string s) {
     Temp_label str = Temp_newlabel();
@@ -258,27 +280,19 @@ Tr_exp Tr_stringExp(string s) {
 }
 
 Tr_exp Tr_callExp(Tr_level call_level, Tr_level func_level, Temp_label name, Tr_expList args) {
-    // form a static link
     T_exp fp = T_Temp(F_FP());
+    // follow the static link
     while(call_level != func_level->parent) {
         fp = F_Exp(F_formals(call_level->frame)->head, fp);
         call_level = call_level->parent;
     }
-
-    // prepend the static link to args
-    Tr_expList el = Tr_ExpList(Tr_Ex(fp), args);
-
     // convert Tr_expList to T_expList
-    T_expList head = NULL, tail = NULL;
-    for(; el; el = el->tail) {
-        if(head) {
-            tail->tail = T_ExpList(unEx(el->head), NULL);
-            tail = tail->tail;
-        } else {
-            head = T_ExpList(unEx(el->head), NULL);
-            tail = head;
-        }
+    Tr_expList el = NULL;
+    T_expList head = NULL;
+    for(el = args; el; el = el->tail) {
+        head = T_ExpList(unEx(el->head), head);
     }
+    head = T_ExpList(fp, head);
     return Tr_Ex(T_Call(T_Name(name), head));
 }
 
@@ -314,19 +328,23 @@ Tr_exp Tr_relExp(A_oper op, Tr_exp left, Tr_exp right) {
 Tr_exp Tr_recordExp(Tr_expList fields, int n_fields) {
     Temp_temp t = Temp_newtemp();
     T_stm record_malloc = T_Move(T_Temp(t), F_externalCall(String("initRecord"), T_ExpList(T_Const(n_fields * F_WORD_SIZE), NULL)));
-
-    T_stm seq = T_Move(T_Mem(T_Binop(T_plus, T_Temp(t), T_Const(0))), unEx(fields->head));
+    // reverse the list
+    Tr_expList el = fields, head = NULL;
+    for(; el; el = el->tail) {
+        head = Tr_ExpList(el->head, head);
+    }
+    T_stm seq = T_Move(T_Mem(T_Binop(T_plus, T_Temp(t), T_Const(0))), unEx(head->head));
     for(int i = 1; i < n_fields; i++) {
-        fields = fields->tail;
-        seq = T_Seq(T_Move(T_Mem(T_Binop(T_plus, T_Temp(t), T_Const(i * F_WORD_SIZE))), unEx(fields->head)), seq);
+        head = head->tail;
+        seq = T_Seq(T_Move(T_Mem(T_Binop(T_plus, T_Temp(t), T_Const(i * F_WORD_SIZE))), unEx(head->head)), seq);
     }
     return Tr_Ex(T_Eseq(T_Seq(record_malloc, seq), T_Temp(t)));
 }
 
 Tr_exp Tr_seqExp(Tr_expList seqs) {
     Tr_expList el = seqs;
-    T_exp s = unEx(seqs->head);
-    for(el = el->tail; el; el = el->tail) s = T_Eseq(T_Exp(unEx(el->head)), s);
+    T_exp s = unEx(el->head);
+    for(el = el->tail; el; el = el->tail) s = T_Eseq(unNx(el->head), s);
     return Tr_Ex(s);
 }
 
@@ -355,6 +373,7 @@ Tr_exp Tr_ifExp(Tr_exp test, Tr_exp then, Tr_exp elsee) {
         T_stm then_stm = NULL;
         T_stm else_stm = NULL;
 
+        // the expression then and else must have the same type, which is the type of entire if-exp or both produce no value.
         if(elsee->kind == Tr_ex) {
             con_exp = Tr_Ex(T_Eseq(c.stm,
                              T_Eseq(T_Label(t), T_Eseq(T_Move(T_Temp(r), unEx(then)),
@@ -397,38 +416,18 @@ Tr_exp Tr_whileExp(Tr_exp test, Tr_exp done, Tr_exp body) {
 
 Tr_exp Tr_doneExp() {
     Temp_label done_label = Temp_newlabel();
-    return Tr_Ex(T_Name(done_label));
-}
-
-Tr_exp Tr_forExp(Tr_exp lo, Tr_exp hi, Tr_exp done, Tr_exp body) {
-    Temp_temp i = Temp_newtemp();
-    Temp_label test_label = Temp_newlabel(), body_label = Temp_newlabel();
-    T_stm initialize = T_Move(T_Temp(i), unEx(lo));                                       // i = lo
-    T_stm condition = T_Cjump(T_le, T_Temp(i), unEx(hi), body_label, unEx(done)->u.NAME); // i <= hi
-
-    return Tr_Nx(T_Seq(initialize,
-    T_Seq(T_Jump(T_Name(test_label), Temp_LabelList(test_label, NULL)),
-    T_Seq(T_Label(body_label), T_Seq(unNx(body),
-    T_Seq(T_Move(T_Temp(i), T_Binop(T_plus, T_Temp(i), T_Const(1))),
-    T_Seq(T_Label(test_label), T_Seq(condition,
-    T_Label(unEx(done)->u.NAME)))))))));
+    return Tr_Ex(T_Name(done_label)); // T_Name() return a memory address
 }
 
 Tr_exp Tr_breakExp(Tr_exp brk) {
-    T_stm s = unNx(brk);
-    if(s->kind == T_LABEL)
-        return Tr_Nx(T_Jump(T_Name(s->u.LABEL), Temp_LabelList(s->u.LABEL, NULL)));
-    else {
-        printf("%s:%d brk parameter must be label!", __FILE__, __LINE__);
-        exit(1);
-    }
+    return Tr_Nx(T_Jump(unEx(brk), Temp_LabelList(unEx(brk)->u.NAME, NULL)));
 }
 
 Tr_exp Tr_letExp(Tr_expList exps) {
     Tr_expList l = exps;
-    T_stm t = T_Exp(unEx(l->head));
+    T_stm t = unNx(l->head);
     for(l = l->tail; l; l = l->tail) {
-        t = T_Seq(T_Exp(unEx(l->head)), t);
+        t = T_Seq(unNx(l->head), t);
     }
     return Tr_Nx(t);
 }

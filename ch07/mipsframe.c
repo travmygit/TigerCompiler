@@ -1,12 +1,12 @@
 #include "frame.h"
 
+const int F_K = 6;         // maximum number of arguments that can be stored in register
+const int F_WORD_SIZE = 4; // MIPS's a WORD size is 4 bytes
 
-const int F_K = 6;         // not use here yet
-const int F_WORD_SIZE = 4;
 struct F_frame_ {
-    Temp_label name;
-    F_accessList formals;
-    unsigned int locals;
+    Temp_label name;       // frame's label, use for assembly code
+    F_accessList formals;  // frame's local variables
+    unsigned int locals;   // frame's local variables' number
 };
 
 struct F_access_ {
@@ -14,12 +14,13 @@ struct F_access_ {
         inFrame, inReg
     } kind;
     union {
-        int offset;    // in frame
-        Temp_temp reg; // in register
+        int offset;    // arguments in frame, the offset of variables
+        Temp_temp reg; // arguments in register, specify register
     } u;
 };
-static F_access InFrame(int offset);  // memory location at offset X from the fp
-static F_access InReg(Temp_temp reg); // held in reg X
+
+static F_access InFrame(int offset);
+static F_access InReg(Temp_temp reg);
 static F_accessList F_AccessList(F_access head, F_accessList tail);
 
 F_frame F_newFrame(Temp_label name, U_boolList formals);
@@ -27,20 +28,31 @@ Temp_label F_name(F_frame f);
 F_accessList F_formals(F_frame f);
 F_access F_allocLocal(F_frame f, bool escape);
 
-
+/**
+ * new frame for mips
+ * 
+ * note:
+ * fp+0  return address
+ * fp+4  static link
+ * fp+8  first arguments
+ * fp+C  second arguments
+ */
 F_frame F_newFrame(Temp_label name, U_boolList formals) {
     F_frame f = checked_malloc(sizeof(*f));
+    int offset = -F_WORD_SIZE; // zero reserved for return address
 
     f->name = name;
-    f->formals = NULL;
-    f->locals = 0;
+    f->formals = F_AccessList(InFrame(offset), NULL); // put in static link in the HEAD
+    f->locals = 1;
 
-    U_boolList b;
-    int offset = -F_WORD_SIZE; // zero reserved for return address
-    // assume all the formals are in frame
-    for(b = formals; b; b = b->tail) {
-        f->formals = F_AccessList(InFrame(offset), f->formals);
+    // to keep things easy, all variables are escaping...
+    U_boolList b = NULL;
+    F_accessList new_node = NULL, node = f->formals;
+    for(b = formals->tail; b; b = b->tail) {
         offset -= F_WORD_SIZE;
+        new_node = F_AccessList(InFrame(offset), NULL);
+        node->tail = new_node;
+        node = node->tail;
         f->locals++;
     }
     return f;
@@ -57,7 +69,7 @@ F_accessList F_formals(F_frame f) {
 F_access F_allocLocal(F_frame f, bool escape) {
     assert(f && escape);
     f->locals++;
-    return InFrame(-f->locals * F_WORD_SIZE);
+    return InFrame(-(f->locals * F_WORD_SIZE));
 }
 
 static F_accessList F_AccessList(F_access head, F_accessList tail) {
@@ -83,8 +95,14 @@ static F_access InReg(Temp_temp reg) {
     return a;
 }
 
+/**
+ * a global fp stand for the frame pointer register-it's presented as ebp in x86 architecture-
+ * which point to the current level's frame.
+ */
 static Temp_temp fp = NULL;
-// IR-tree interface
+/**
+ * always return a fp register point to current level's frame.
+ */
 Temp_temp F_FP() {
     if(!fp) {
         fp = Temp_newtemp();
