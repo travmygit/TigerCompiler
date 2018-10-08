@@ -1,5 +1,5 @@
 ## Tiger-Compiler
-Codes and Exercises with book << Modern Compiler Implementation in C >>
+Codes and Exercises in book << Modern Compiler Implementation in C >>
 
 ![compilerbook](https://images-cn.ssl-images-amazon.com/images/I/41ui4h4faGL._AA218_.jpg)
 
@@ -23,5 +23,18 @@ Tiger is designed for studying the theory of compiler. More details for the lang
 
 [7 - Translation to Intermediate Code](./ch07/)
 
+[8]
+
+[9]
+
+[10]
+
+[11]
+
+[12]
+
 ## Contributor
 [trav](https://github.com/travmygit)
+
+## Reference
+https://github.com/cmcl/tiger
