@@ -3,6 +3,11 @@
  *           basic blocks and traces.
  *
  */
+#ifndef CANON_H
+#define CANON_H
+
+#include "tree.h"
+
 typedef struct C_stmListList_ *C_stmListList;
 struct C_block { C_stmListList stmLists; Temp_label label;};
 struct C_stmListList_ { T_stmList head; C_stmListList tail;};
@@ -39,3 +44,4 @@ T_stmList C_traceSchedule(struct C_block b);
             as possible are eliminated by falling through into T.LABEL(lab).
          */
 
+#endif /* canon.h */

@@ -5,6 +5,7 @@
 #include "temp.h"
 #include "frame.h"
 #include "tree.h"
+#include "canon.h"
 
 typedef struct Tr_level_ *Tr_level;
 typedef struct Tr_access_ *Tr_access;
