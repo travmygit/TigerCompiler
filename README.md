@@ -23,15 +23,15 @@ Tiger is designed for studying the theory of compiler. More details for the lang
 
 [7 - Translation to Intermediate Code](./ch07/)
 
-[8]
+[8 - Basic Blocks and Traces](./ch08/)
 
-[9]
+[9 - Instruction Selection](./ch09/)
 
-[10]
+[10 - Liveness Analysis](./ch10/)
 
-[11]
+[11 - Register Allocation](./ch11/)
 
-[12]
+[12 - Putting It All Together](./ch12/)
 
 ## Contributor
 [trav](https://github.com/travmygit)
