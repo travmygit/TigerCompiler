@@ -1,24 +1,19 @@
-## Canon
+## Instruction Selection
 
-惊喜的发现这部分作者已经写好了，不过我们在拿来用的同时，不妨看看这样做的原因是什么。
+[+] mipscodegen.c
 
-### 使用
+[+] mipsframe.c
 
-1. C_linearize()
+### Summary
 
-2. C_basicBlocks()
+这个部分的目标是将canon tree转换为assembly code，这里我选择的是mips32汇编语言作为最终生成目标。
 
-3. C_traceSchedule()
+关于mips32的内容，可以通过google搜索。
 
-将stmlist依此传入canon的三个接口即可获得干净的canon tree.
+我提供一个mips32的emulator: [SPIM](http://spimsimulator.sourceforge.net)
 
-### 探索
+这里注意一个问题，就是为了使这部分和寄存器分配的部分分离开来，所以生成的汇编代码使用的寄存器不是mips32里面严格规定的寄存器，而是使用了一些临时变量、临时寄存器的名字来取代，因此生成的汇编代码并不是运行，而只是将canon tree的内容以代码的形式表示出来。
 
-一棵ir tree包含了很多类似ESEQ CJUMP等结构，我们拿CJUMP来说，CJUMP有两个跳转地址，这两个地址是可以指定的。
-但是在汇编里，是不可能允许一个判断语句、一个跳转语句有两个跳转地址的，只能有一个，比如为真跳转至某个地址，为假
-跳转至下一个指令。因此我们的ir tree就非常不适合转化为汇编语言，因此解决方案就是把两个地址变成一个地址，也就是
-将为假的地址变成下一个statement的地址。因此我们需要让这个ir tree重构，变成一棵干净的canon tree.
+而且汇编代码的具体结构，包括prolog、epilog、main函数声明、.data声明都没用加进去。这些内容将在之后的章节完善。
 
-那么如何进行这样的转化呢？这里提出了一个Basic Blocks的概念，将一连串只含有一个跳转指令的statements合成一个
-Block，在形成这些Block之后，我们就可以重新排序这些Blocks的位置，这样就解决了CJUMP的问题了。
 
