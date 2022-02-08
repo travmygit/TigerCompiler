@@ -105,7 +105,7 @@ void adjust(void) {
 
   /* string literal */
 <INITIAL>\"   {adjust(); init_string_buffer(); BEGIN INSTRING;}
-<INSTRING>\"  {adjust(); yylval.sval = String(string_buffer); BEGIN 0; return STRING;}
+<INSTRING>\"  {adjust(); yylval.sval = String(string_buffer); free(string_buffer); BEGIN 0; return STRING;}
 <INSTRING>\n  {adjust(); EM_error(EM_tokPos,"unclose string: newline appear in string"); yyterminate();}
 <INSTRING><<EOF>> {adjust(); EM_error(EM_tokPos,"unclose string"); yyterminate();}
 <INSTRING>\\[0-9]{3} {adjust(); int tmp; sscanf(yytext+1, "%d", &tmp);

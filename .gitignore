@@ -1,0 +1,6 @@
+.idea/
+*.o
+*.tab.*
+y.output
+lex.yy.c
+*test

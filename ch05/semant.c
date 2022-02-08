@@ -1,3 +1,4 @@
+#include <malloc.h>
 #include "semant.h"
 #include "types.h"
 #include "env.h"
@@ -29,7 +30,9 @@ static int inside = 0;
 // Turn 'Ty_name' to actual type
 static Ty_ty actual_ty(Ty_ty ty) {
     Ty_ty t = ty;
-    while(t->kind == Ty_name) t = t->u.name.ty;
+    if (t->kind == Ty_name) {
+        return actual_ty(ty->u.name.ty);
+    }
     return t;
 }
 
@@ -314,6 +317,61 @@ expty transExp(S_table venv, S_table tenv, A_exp e) {
     assert(0); // should have returned from some clause of the switch
 }
 
+struct VisitedItem {
+    Ty_ty ty;
+    int legal;
+    struct VisitedItem *next;
+};
+struct VisitedItem *visitedItemHead = NULL;
+struct VisitedItem *getVisited(Ty_ty ty) {
+    struct VisitedItem *tmp;
+    for (tmp = visitedItemHead; tmp; tmp = tmp->next) {
+        if (tmp->ty == ty) {
+            return tmp;
+        }
+    }
+    return NULL;
+}
+struct VisitedItem * addVisitedItem(Ty_ty ty, int legal) {
+    struct VisitedItem *new = (struct VisitedItem *)malloc(sizeof *new);
+    new->ty = ty;
+    new->legal = legal;
+    new->next = visitedItemHead;
+    visitedItemHead = new;
+}
+void freeVisitedItem(struct VisitedItem *item) {
+    if (item == NULL) {
+        return;
+    }
+    freeVisitedItem(item->next);
+    free(item);
+}
+int isLegalType(Ty_ty ty) {
+    if (ty->kind != Ty_name) {
+        return 1;
+    }
+    struct VisitedItem *i = getVisited(ty);
+    if (i != NULL) {
+        return i->legal;
+    }
+    struct VisitedItem *new = addVisitedItem(ty, 0);
+    new->legal = isLegalType(ty->u.name.ty);
+    return new->legal;
+}
+int checkRecursiveType(S_table tenv, A_nametyList nl) {
+    for (; nl; nl = nl->tail) {
+        Ty_ty t = S_look(tenv, nl->head->name);
+        if (t->kind == Ty_name && !isLegalType(t)) {
+            freeVisitedItem(visitedItemHead);
+            visitedItemHead = NULL;
+            return 0;
+        }
+    }
+    freeVisitedItem(visitedItemHead);
+    visitedItemHead = NULL;
+    return 1;
+}
+
 void  transDec(S_table venv, S_table tenv, A_dec d) {
     switch(d->kind) {
         case A_varDec: {
@@ -364,11 +422,10 @@ void  transDec(S_table venv, S_table tenv, A_dec d) {
                 Ty_ty t = transTy(tenv, type_list->head->ty);
                 Ty_ty name_type = S_look(tenv, type_list->head->name);
                 name_type->u.name.ty = t;
-                if(t->kind != Ty_name) cycle_decl = FALSE;
             }
-            if(cycle_decl) {
-                EM_error(d->pos, "type declare: illegal cycle type declaration: must contain at least one built-in type");
-                return;
+            int result = checkRecursiveType(tenv, d->u.type);
+            if(result == 0) {
+                EM_error(d->pos, "illegal type cycle");
             }
             return;
         }
