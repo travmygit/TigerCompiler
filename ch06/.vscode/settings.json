@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "frame.h": "c",
-        "util.h": "c",
-        "limits": "c",
-        "type_traits": "c"
-    }
-}
