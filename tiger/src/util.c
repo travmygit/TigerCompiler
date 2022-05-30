@@ -6,11 +6,7 @@
 void* checked_malloc(size_t size)
 {
 	void* p = malloc(size);
-	if (!p)
-	{
-		fprintf(stderr, "Ran out of memory!");
-		exit(1);
-	}
+	assert(p);
 	return p;
 }
 
