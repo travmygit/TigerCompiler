@@ -6,6 +6,7 @@ workspace "tiger"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 project "tiger"
+    location "tiger"
     kind "ConsoleApp"
     language "C"
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
