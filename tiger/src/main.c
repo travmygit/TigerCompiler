@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv)
 {
-	printf("Welcome to tiger compiler!\n");
+	printf("Welcome to tiger compiler!\n\n");
 
 	// chap1
 	A_stm stm = prog();
@@ -13,6 +13,27 @@ int main(int argc, char** argv)
 	printf("maxargs:\n%d\n", maxargs(stm));
 	printf("interp:\n");
 	interp(stm);
+
+	string nodes1[9] = { "t", "s", "p", "i", "p", "f", "b", "s", "t" };
+	int bindings1[9] = {  1 ,  2 ,  3 ,  4 ,  5 ,  6 ,  7 ,  8 ,  9  };
+	string nodes2[9] = { "a", "b", "c", "d", "e", "f", "g", "h", "i" };
+	int bindings2[9] = {  9 ,  8 ,  7 ,  6 ,  5 ,  4 ,  3 ,  2 ,  1  };
+	T_tree t1 = NULL;
+	for (int i = 0; i < 9; ++i)
+	{
+		t1 = insertTree(nodes1[i], &bindings1[i], t1);
+	}
+	T_tree t2 = NULL;
+	for (int i = 0; i < 9; ++i)
+	{
+		t2 = insertTree(nodes2[i], &bindings2[i], t2);
+	}
+	printf("depth of tree1: %d\n", depthTree(t1));
+	printf("depth of tree2: %d\n", depthTree(t2));
+	printf("member b in tree1: %d\n", memberTree("b", t1));
+	printf("member c in tree1: %d\n", memberTree("c", t1));
+	printf("lookup b in tree1: %d\n", *(int*)lookupTree("b", t1));
+	printf("lookup b in tree2: %d\n", *(int*)lookupTree("b", t2));
 
 	return 0;
 }

@@ -243,3 +243,89 @@ void interp(A_stm stm)
 {
 	interpStm(stm, NULL);
 }
+
+//////////////////////////////////////////////////////////////////////////
+// tree
+//////////////////////////////////////////////////////////////////////////
+
+T_tree Tree(T_tree left, T_tree right, string key, void* binding)
+{
+	T_tree t = checked_malloc(sizeof(*t));
+	t->left = left;
+	t->right = right;
+	t->key = key;
+	t->binding = binding;
+	return t;
+}
+
+T_tree insertTree(string key, void* binding, T_tree t)
+{
+	if (t == NULL)
+	{
+		return Tree(NULL, NULL, key, binding);
+	}
+	else if (strcmp(key, t->key) < 0)
+	{
+		return Tree(insertTree(key, binding, t->left), t->right, t->key, t->binding);
+	}
+	else if (strcmp(key, t->key) > 0)
+	{
+		return Tree(t->left, insertTree(key, binding, t->right), t->key, t->binding);
+	}
+	else
+	{
+		return Tree(t->left, t->right, key, binding);
+	}
+}
+
+bool memberTree(string key, T_tree t)
+{
+	if (t == NULL)
+	{
+		return FALSE;
+	}
+	else if (strcmp(key, t->key) < 0)
+	{
+		return memberTree(key, t->left);
+	}
+	else if (strcmp(key, t->key) > 0)
+	{
+		return memberTree(key, t->right);
+	}
+	else
+	{
+		return TRUE;
+	}
+}
+
+void* lookupTree(string key, T_tree t)
+{
+	if (t == NULL)
+	{
+		return NULL;
+	}
+	else if (strcmp(key, t->key) < 0)
+	{
+		return lookupTree(key, t->left);
+	}
+	else if (strcmp(key, t->key) > 0)
+	{
+		return lookupTree(key, t->right);
+	}
+	else
+	{
+		return t->binding;
+	}
+}
+
+int depthTree(T_tree t)
+{
+	if (t == NULL)
+	{
+		return 0;
+	}
+	else
+	{
+		return max(depthTree(t->left), depthTree(t->right)) + 1;
+	}
+}
