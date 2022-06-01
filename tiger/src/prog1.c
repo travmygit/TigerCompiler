@@ -371,6 +371,95 @@ T_tree insertNode(string key, void* binding, T_tree t)
 	return h;
 }
 
+bool isBST_internal(T_tree t, string min, string max)
+{
+	if (t == NULL)
+	{
+		return TRUE;
+	}
+	if (min != NULL && strcmp(min, t->key) >= 0)
+	{
+		return FALSE;
+	}
+	if (max != NULL && strcmp(max, t->key) <= 0)
+	{
+		return FALSE;
+	}
+	return isBST_internal(t->left, min, t->key) && isBST_internal(t->right, t->key, max);
+}
+
+bool isBST(T_tree root)
+{
+	return isBST_internal(root, NULL, NULL);
+}
+
+bool is23_internal(T_tree t)
+{
+	if (t == NULL)
+	{
+		return TRUE;
+	}
+	if (isRed(t->right))
+	{
+		return FALSE;
+	}
+	if (isRed(t) && isRed(t->left))
+	{
+		return FALSE;
+	}
+	return is23_internal(t->left) && is23_internal(t->right);
+}
+
+bool is23(T_tree root)
+{
+	return is23_internal(root);
+}
+
+bool isBalanced_internal(T_tree t, int black)
+{
+	if (t == NULL)
+	{
+		return black == 0;
+	}
+	if (!isRed(t))
+	{
+		black--;
+	}
+	return isBalanced_internal(t->left, black) && isBalanced_internal(t->right, black);
+}
+
+bool isBalanced(T_tree root)
+{
+	int black = 0;
+	T_tree t = root;
+	while (t)
+	{
+		if (!isRed(t))
+		{
+			black++;
+		}
+		t = t->left;
+	}
+	return isBalanced_internal(root, black);
+}
+
+bool checkLLRB(T_tree root)
+{
+	if (!isBST(root))
+	{
+		printf("Not BST!");
+	}
+	if (!is23(root))
+	{
+		printf("Not 2-3 Tree!");
+	}
+	if (!isBalanced(root))
+	{
+		printf("Not Balanced Tree!");
+	}
+	return isBST(root) && is23(root) && isBalanced(root);
+}
+
 T_tree Tree(T_tree left, T_tree right, string key, void* binding, bool color)
 {
 	T_tree t = checked_malloc(sizeof(*t));
@@ -386,6 +475,7 @@ T_tree insertTree(string key, void* binding, T_tree t)
 {
 	T_tree root = insertNode(key, binding, t);
 	root->color = BLACK;
+	assert(checkLLRB(root));
 	return root;
 }
 
