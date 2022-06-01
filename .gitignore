@@ -1,7 +1,7 @@
-.vs/
-.idea/
-bin/
-bin-int/
+/.vs/
+/.idea/
+/bin/
+/bin-int/
 
 *.user
 *.sln
