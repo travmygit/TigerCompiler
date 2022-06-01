@@ -248,6 +248,8 @@ void interp(A_stm stm)
 // tree
 //////////////////////////////////////////////////////////////////////////
 
+#if OPTIMIZE_TREE_DISABLED
+
 T_tree Tree(T_tree left, T_tree right, string key, void* binding)
 {
 	T_tree t = checked_malloc(sizeof(*t));
@@ -278,44 +280,157 @@ T_tree insertTree(string key, void* binding, T_tree t)
 	}
 }
 
-bool memberTree(string key, T_tree t)
+#else // OPTIMIZE_TREE_DISABLED
+
+//////////////////////////////////////////////////////////////////////////
+// LLRB
+//////////////////////////////////////////////////////////////////////////
+
+bool isRed(T_tree h)
 {
-	if (t == NULL)
+	if (h == NULL)
 	{
 		return FALSE;
 	}
-	else if (strcmp(key, t->key) < 0)
+	return h->color == RED;
+}
+
+// rotate a right-leaning to left-leaning
+T_tree rotateLeft(T_tree h)
+{
+	assert(h);
+	assert(isRed(h->right));
+	T_tree x = h->right;
+	h->right = x->left;
+	x->left = h;
+	x->color = h->color;
+	h->color = RED;
+	return x;
+}
+
+// rotate a left-leaning to right-leaning
+T_tree rotateRight(T_tree h)
+{
+	assert(h);
+	assert(isRed(h->left));
+	T_tree x = h->left;
+	h->left = x->right;
+	x->right = h;
+	x->color = h->color;
+	h->color = RED;
+	return x;
+}
+
+void flipColor(T_tree h)
+{
+	assert(h);
+	assert(!isRed(h));
+	assert(isRed(h->left));
+	assert(isRed(h->right));
+	h->color = RED;
+	h->left->color = BLACK;
+	h->right->color = BLACK;
+}
+
+T_tree insertNode(string key, void* binding, T_tree t)
+{
+	if (t == NULL)
 	{
-		return memberTree(key, t->left);
+		return Tree(NULL, NULL, key, binding, RED);
 	}
-	else if (strcmp(key, t->key) > 0)
+
+	T_tree h;
+	int cmp = strcmp(key, t->key);
+	if (cmp < 0)
 	{
-		return memberTree(key, t->right);
+		h = Tree(insertNode(key, binding, t->left), t->right, t->key, t->binding, t->color);
+	}
+	else if (cmp > 0)
+	{
+		h = Tree(t->left, insertNode(key, binding, t->right), t->key, t->binding, t->color);
 	}
 	else
 	{
-		return TRUE;
+		h = Tree(t->left, t->right, key, binding, t->color);
 	}
+
+	// fix-up any right-leaning links
+	if (isRed(h->right) && !isRed(h->left))
+	{
+		h = rotateLeft(h);
+	}
+	if (isRed(h->left) && isRed(h->left->left))
+	{
+		h = rotateRight(h);
+	}
+	if (isRed(h->left) && isRed(h->right))
+	{
+		flipColor(h);
+	}
+
+	return h;
+}
+
+T_tree Tree(T_tree left, T_tree right, string key, void* binding, bool color)
+{
+	T_tree t = checked_malloc(sizeof(*t));
+	t->left = left;
+	t->right = right;
+	t->key = key;
+	t->binding = binding;
+	t->color = color;
+	return t;
+}
+
+T_tree insertTree(string key, void* binding, T_tree t)
+{
+	T_tree root = insertNode(key, binding, t);
+	root->color = BLACK;
+	return root;
+}
+
+#endif // OPTIMIZE_TREE_DISABLED
+
+bool memberTree(string key, T_tree t)
+{
+	while (t)
+	{
+		int cmp = strcmp(key, t->key);
+		if (cmp < 0)
+		{
+			t = t->left;
+		}
+		else if (cmp > 0)
+		{
+			t = t->right;
+		}
+		else
+		{
+			return TRUE;
+		}
+	}
+	return FALSE;
 }
 
 void* lookupTree(string key, T_tree t)
 {
-	if (t == NULL)
+	while (t)
 	{
-		return NULL;
+		int cmp = strcmp(key, t->key);
+		if (cmp < 0)
+		{
+			t = t->left;
+		}
+		else if (cmp > 0)
+		{
+			t = t->right;
+		}
+		else
+		{
+			return t->binding;
+		}
 	}
-	else if (strcmp(key, t->key) < 0)
-	{
-		return lookupTree(key, t->left);
-	}
-	else if (strcmp(key, t->key) > 0)
-	{
-		return lookupTree(key, t->right);
-	}
-	else
-	{
-		return t->binding;
-	}
+	return NULL;
 }
 
 int depthTree(T_tree t)
