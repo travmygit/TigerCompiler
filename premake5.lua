@@ -15,8 +15,12 @@ project "tiger"
     files
     {
         "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.c"
+        "%{prj.name}/src/**.c",
+        "%{prj.name}/src/tiger.lex"
     }
+
+    filter "system:windows"
+        prebuildcommands { "start /b %{wks.location}/vendor/flex/bin/flex.exe -o%{wks.location}/%{prj.name}/src/lex.yy.c %{wks.location}/%{prj.name}/src/tiger.lex" }
 
     filter "configurations:Debug"
         defines { "DEBUG" }

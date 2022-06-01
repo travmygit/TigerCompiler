@@ -1,3 +1,5 @@
+#if 0
+
 #include <stdio.h>
 #include "util.h"
 #include "slp.h"
@@ -37,3 +39,5 @@ int main(int argc, char** argv)
 
 	return 0;
 }
+
+#endif
