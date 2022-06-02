@@ -369,26 +369,28 @@ char *yytext;
 #define INITIAL 0
 #line 2 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
 #include <string.h>
+#include <stdlib.h> // @see https://stackoverflow.com/questions/24704468/malloc-returning-address-that-i-cannot-access
 #include "util.h"
 #include "tokens.h"
 #include "errormsg.h"
 
-int charPos=1;
+// extern int   yyleng; // the length of the matched string
+// extern char* yytext; // the literal string matched by regular expression
 
-int yywrap(void)
+int charPos = 1;
+
+int yywrap()
 {
- charPos=1;
- return 1;
+	charPos = 1;
+	return 1;
 }
 
-
-void adjust(void)
+void adjust()
 {
- EM_tokPos=charPos;
- charPos+=yyleng;
+	EM_tokPos = charPos;
+	charPos += yyleng;
 }
-
-#line 392 "H:\\code\\dev\\TigerCompiler\\/tiger/src/lex.yy.c"
+#line 394 "H:\\code\\dev\\TigerCompiler\\/tiger/src/lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -539,9 +541,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 24 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
+#line 25 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
 
-#line 545 "H:\\code\\dev\\TigerCompiler\\/tiger/src/lex.yy.c"
+#line 547 "H:\\code\\dev\\TigerCompiler\\/tiger/src/lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -626,40 +628,40 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 25 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
-{adjust(); continue;}
+#line 26 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
+{ adjust(); continue; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 26 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
-{adjust(); EM_newline(); continue;}
+#line 27 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
+{ adjust(); EM_newline(); continue; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 27 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
-{adjust(); return COMMA;}
+#line 28 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
+{ adjust(); return COMMA; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 28 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
-{adjust(); return FOR;}
+#line 29 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
+{ adjust(); return FOR; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 29 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
-{adjust(); yylval.ival=atoi(yytext); return INT;}
+#line 30 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
+{ adjust(); yylval.ival = atoi(yytext); return INT; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 30 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
-{adjust(); EM_error(EM_tokPos,"illegal token");}
+#line 31 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
+{ adjust(); EM_error(EM_tokPos, "illegal token"); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 33 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
+#line 32 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
 ECHO;
 	YY_BREAK
-#line 663 "H:\\code\\dev\\TigerCompiler\\/tiger/src/lex.yy.c"
+#line 665 "H:\\code\\dev\\TigerCompiler\\/tiger/src/lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1545,4 +1547,4 @@ int main()
 	return 0;
 	}
 #endif
-#line 33 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
+#line 32 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.lex"
