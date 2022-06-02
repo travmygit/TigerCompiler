@@ -5,6 +5,24 @@
 #include "tokens.h"
 #include "errormsg.h"
 
+// TODO:
+//   handle comments
+//   handle strings
+//   error handling
+//   EOF handling
+//   ...
+// NOTE:
+//   Identifiers
+//   Comments
+//   Integer literal
+//   String literal
+// Reserved words:
+//   while, for, to, break, let, in, end,
+//   function, var, type, array, if, then,
+//   else, do, of, nil
+// Punctuation symbols:
+//   , : ; ( ) [ ] { } . + - * / = <> < <= > >= & | :=
+
 // extern int   yyleng; // the length of the matched string
 // extern char* yytext; // the literal string matched by regular expression
 
