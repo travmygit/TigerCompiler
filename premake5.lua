@@ -16,7 +16,8 @@ project "tiger"
     {
         "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.c",
-        "%{prj.name}/src/tiger.lex"
+        "%{prj.name}/src/tiger.lex",
+        "%{prj.name}/src/tiger.grm"
     }
 
     filter "system:windows"
