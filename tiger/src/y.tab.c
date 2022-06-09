@@ -68,10 +68,10 @@
 /* Copy the first part of user declarations.  */
 
 /* Line 189 of yacc.c  */
-#line 1 ".\\tiger.grm"
+#line 1 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.grm"
 
 #include <stdio.h>
-#include <stdlib.h>
+//#include <stdlib.h>
 #include "util.h"
 #include "errormsg.h"
 
@@ -84,7 +84,7 @@ void yyerror(char *s)
 
 
 /* Line 189 of yacc.c  */
-#line 88 "tiger.tab.grm"
+#line 88 "H:\\code\\dev\\TigerCompiler\\/tiger/src/y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -156,6 +156,51 @@ void yyerror(char *s)
      TYPE = 300
    };
 #endif
+/* Tokens.  */
+#define ID 258
+#define STRING 259
+#define INT 260
+#define COMMA 261
+#define COLON 262
+#define SEMICOLON 263
+#define LPAREN 264
+#define RPAREN 265
+#define LBRACK 266
+#define RBRACK 267
+#define LBRACE 268
+#define RBRACE 269
+#define DOT 270
+#define PLUS 271
+#define MINUS 272
+#define TIMES 273
+#define DIVIDE 274
+#define EQ 275
+#define NEQ 276
+#define LT 277
+#define LE 278
+#define GT 279
+#define GE 280
+#define AND 281
+#define OR 282
+#define ASSIGN 283
+#define ARRAY 284
+#define IF 285
+#define THEN 286
+#define ELSE 287
+#define WHILE 288
+#define FOR 289
+#define TO 290
+#define DO 291
+#define LET 292
+#define IN 293
+#define END 294
+#define OF 295
+#define BREAK 296
+#define NIL 297
+#define FUNCTION 298
+#define VAR 299
+#define TYPE 300
+
 
 
 
@@ -164,7 +209,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 16 ".\\tiger.grm"
+#line 16 "H:\\code\\dev\\TigerCompiler\\/tiger/src/tiger.grm"
 
 	int pos;
 	int ival;
@@ -173,7 +218,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 177 "tiger.tab.grm"
+#line 222 "H:\\code\\dev\\TigerCompiler\\/tiger/src/y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -185,7 +230,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 189 "tiger.tab.grm"
+#line 234 "H:\\code\\dev\\TigerCompiler\\/tiger/src/y.tab.c"
 
 #ifdef short
 # undef short
@@ -1375,7 +1420,7 @@ yyreduce:
       
 
 /* Line 1455 of yacc.c  */
-#line 1379 "tiger.tab.grm"
+#line 1424 "H:\\code\\dev\\TigerCompiler\\/tiger/src/y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);

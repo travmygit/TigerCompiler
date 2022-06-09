@@ -21,7 +21,12 @@ project "tiger"
     }
 
     filter "system:windows"
-        prebuildcommands { "start /b %{wks.location}/vendor/flex/bin/flex.exe -o%{wks.location}/%{prj.name}/src/lex.yy.c %{wks.location}/%{prj.name}/src/tiger.lex" }
+        prebuildcommands
+        {
+            "set M4=%{wks.location}/vendor/bison/bin/m4.exe",
+            "start /b %{wks.location}/vendor/bison/bin/bison.exe -o%{wks.location}/%{prj.name}/src/y.tab.c -y -dv %{wks.location}/%{prj.name}/src/tiger.grm",
+            "start /b %{wks.location}/vendor/flex/bin/flex.exe -o%{wks.location}/%{prj.name}/src/lex.yy.c %{wks.location}/%{prj.name}/src/tiger.lex",
+        }
 
     filter "configurations:Debug"
         defines { "DEBUG" }

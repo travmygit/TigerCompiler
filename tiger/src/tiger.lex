@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h> // @see https://stackoverflow.com/questions/24704468/malloc-returning-address-that-i-cannot-access
 #include "util.h"
-#include "tokens.h"
+#include "y.tab.h"
 #include "errormsg.h"
 
 // TODO:

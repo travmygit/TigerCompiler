@@ -1,42 +1,150 @@
+Terminals unused in grammar
+
+   STRING
+   INT
+   COMMA
+   COLON
+   SEMICOLON
+   LPAREN
+   RPAREN
+   LBRACK
+   RBRACK
+   LBRACE
+   RBRACE
+   DOT
+   PLUS
+   MINUS
+   TIMES
+   DIVIDE
+   EQ
+   NEQ
+   LT
+   LE
+   GT
+   GE
+   AND
+   OR
+   ASSIGN
+   ARRAY
+   IF
+   THEN
+   ELSE
+   WHILE
+   FOR
+   TO
+   DO
+   LET
+   IN
+   END
+   OF
+   BREAK
+   NIL
+   FUNCTION
+   VAR
+   TYPE
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: exp
+
+    2 exp: ID
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+ID (258) 2
+STRING (259)
+INT (260)
+COMMA (261)
+COLON (262)
+SEMICOLON (263)
+LPAREN (264)
+RPAREN (265)
+LBRACK (266)
+RBRACK (267)
+LBRACE (268)
+RBRACE (269)
+DOT (270)
+PLUS (271)
+MINUS (272)
+TIMES (273)
+DIVIDE (274)
+EQ (275)
+NEQ (276)
+LT (277)
+LE (278)
+GT (279)
+GE (280)
+AND (281)
+OR (282)
+ASSIGN (283)
+ARRAY (284)
+IF (285)
+THEN (286)
+ELSE (287)
+WHILE (288)
+FOR (289)
+TO (290)
+DO (291)
+LET (292)
+IN (293)
+END (294)
+OF (295)
+BREAK (296)
+NIL (297)
+FUNCTION (298)
+VAR (299)
+TYPE (300)
+
+
+Nonterminals, with rules where they appear
+
+$accept (46)
+    on left: 0
+program (47)
+    on left: 1, on right: 0
+exp (48)
+    on left: 2, on right: 1
+
 
 state 0
-	$accept : _program $end 
 
-	ID  shift 3
-	.  error
+    0 $accept: . program $end
 
-	program  goto 1
-	exp  goto 2
+    ID  shift, and go to state 1
+
+    program  go to state 2
+    exp      go to state 3
+
 
 state 1
-	$accept :  program_$end 
 
-	$end  accept
-	.  error
+    2 exp: ID .
+
+    $default  reduce using rule 2 (exp)
 
 
 state 2
-	program :  exp_    (1)
 
-	.  reduce 1
+    0 $accept: program . $end
+
+    $end  shift, and go to state 4
 
 
 state 3
-	exp :  ID_    (2)
 
-	.  reduce 2
+    1 program: exp .
+
+    $default  reduce using rule 1 (program)
 
 
-45/3000 terminals, 2/1000 nonterminals
-3/2000 grammar rules, 4/5000 states
-0 shift/reduce, 0 reduce/reduce conflicts reported
-3/1400 working sets used
-memory: states,etc. 30/40000, parser 1/70000
-3/600 distinct lookahead sets
-0 extra closures
-1 shift entries, 1 exceptions
-2 goto entries
-0 entries saved by goto default
-Optimizer space used: input 6/40000, output 3/70000
-3 table entries, 0 zero
-maximum spread: 257, maximum offset: 257
+state 4
+
+    0 $accept: program $end .
+
+    $default  accept
