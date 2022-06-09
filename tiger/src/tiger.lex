@@ -30,8 +30,20 @@
 int charPos = 1;
 
 #define STRING_BUFFER_SIZE 4096
-char  string_buffer[STRING_BUFFER_SIZE];
-char* string_buffer_ptr;
+char string_buffer[STRING_BUFFER_SIZE];
+int  string_buffer_index;
+
+void yy_extend_string(char c)
+{
+	if (string_buffer_index < STRING_BUFFER_SIZE)
+	{
+		string_buffer[string_buffer_index++] = c;
+	}
+	else
+	{
+		EM_error(EM_tokPos, "string too long (> 4095)");
+	}
+}
 
 int yywrap()
 {
@@ -92,22 +104,22 @@ type                   { adjust(); return TYPE; }
 [a-zA-Z][a-zA-Z0-9_]*  { adjust(); yylval.sval = String(yytext); return ID; }
 [0-9]+                 { adjust(); yylval.ival = atoi(yytext); return INT; }
 "/*"                   { adjust(); BEGIN(COMMENT); }
-\"                     { adjust(); string_buffer_ptr = string_buffer; BEGIN(STRINGS); }
+\"                     { adjust(); string_buffer_index = 0; BEGIN(STRINGS); }
 .                      { adjust(); EM_error(EM_tokPos, "illegal token"); yyterminate(); }
 <COMMENT>[^*\n]*                { adjust(); continue; }
 <COMMENT>"*"+[^*/\n]*           { adjust(); continue; }
 <COMMENT>\n                     { adjust(); EM_newline(); continue; }
 <COMMENT>"*"+"/"                { adjust(); BEGIN(INITIAL); }
 <COMMENT><<EOF>>                { EM_error(EM_tokPos, "unclosed comment"); yyterminate(); }
-<STRINGS>\"                     { adjust(); string_buffer_ptr = '\0'; yylval.sval = String(string_buffer); BEGIN(INITIAL); return STRING; }
+<STRINGS>\"                     { adjust(); yy_extend_string('\0'); yylval.sval = String(string_buffer); BEGIN(INITIAL); return STRING; }
 <STRINGS>\n                     { adjust(); EM_error(EM_tokPos, "illegal newline in literal string"); yyterminate(); }
-<STRINGS>\\[0-7]{1,3}           { adjust(); int result; sscanf(yytext + 1, "%o", &result); if (result > 0xff) { EM_error(EM_tokPos, "illegal octal escape sequence in literal string"); yyterminate(); } *string_buffer_ptr++ = result; }
+<STRINGS>\\[0-7]{1,3}           { adjust(); int result; sscanf(yytext + 1, "%o", &result); if (result > 0xff) { EM_error(EM_tokPos, "illegal octal escape sequence in literal string"); yyterminate(); } yy_extend_string(result); }
 <STRINGS>\\[0-9]+               { adjust(); EM_error(EM_tokPos, "illegal octal escape sequence in literal string"); yyterminate(); }
-<STRINGS>\\n                    { adjust(); *string_buffer_ptr++ = '\n'; }
-<STRINGS>\\t                    { adjust(); *string_buffer_ptr++ = '\t'; }
-<STRINGS>\\r                    { adjust(); *string_buffer_ptr++ = '\r'; }
-<STRINGS>\\b                    { adjust(); *string_buffer_ptr++ = '\b'; }
-<STRINGS>\\f                    { adjust(); *string_buffer_ptr++ = '\f'; }
-<STRINGS>\\(.|\n)               { adjust(); *string_buffer_ptr++ = yytext[1]; }
-<STRINGS>[^\\\n\"]+             { adjust(); char* yptr = yytext; while (*yptr) *string_buffer_ptr++ = *yptr++; }
+<STRINGS>\\n                    { adjust(); yy_extend_string('\n'); }
+<STRINGS>\\t                    { adjust(); yy_extend_string('\t'); }
+<STRINGS>\\r                    { adjust(); yy_extend_string('\r'); }
+<STRINGS>\\b                    { adjust(); yy_extend_string('\b'); }
+<STRINGS>\\f                    { adjust(); yy_extend_string('\f'); }
+<STRINGS>\\(.|\n)               { adjust(); yy_extend_string(yytext[1]); }
+<STRINGS>[^\\\n\"]+             { adjust(); char* yptr = yytext; while (*yptr) yy_extend_string(*yptr++); }
 <STRINGS><<EOF>>                { EM_error(EM_tokPos, "unclosed string"); yyterminate(); }
