@@ -1,5 +1,5 @@
 workspace "tiger"
-    architecture "x64"
+    architecture "x86"
     configurations { "Debug", "Release" }
     startproject "tiger"
 
@@ -18,6 +18,12 @@ project "tiger"
         "%{prj.name}/src/**.c",
         "%{prj.name}/src/tiger.lex",
         "%{prj.name}/src/tiger.grm"
+    }
+
+    defines
+    {
+        "_CRT_SECURE_NO_WARNINGS",
+        "_CRT_NONSTDC_NO_DEPRECATE"
     }
 
     filter "system:windows"

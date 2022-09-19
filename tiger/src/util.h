@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UTIL_H
+#define UTIL_H
 
 #include <assert.h>
 
@@ -26,3 +27,5 @@ struct U_intList_
 	U_intList tail;
 };
 U_intList U_IntList(int head, U_intList tail);
+
+#endif // !UTIL_H

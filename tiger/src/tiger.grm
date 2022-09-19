@@ -1,9 +1,13 @@
 %{
 #include <stdio.h>
 #include "util.h"
+#include "symbol.h"
 #include "errormsg.h"
+#include "absyn.h"
 
 int yylex(void); /* prototype for the lexing function */
+
+A_exp absyn_root;
 
 void yyerror(char *s) { EM_error(EM_tokPos, "%s", s); }
 
@@ -14,6 +18,8 @@ void yyerror(char *s) { EM_error(EM_tokPos, "%s", s); }
 	int pos;
 	int ival;
 	string sval;
+    A_var var;
+	A_exp exp;
 }
 
 %token <sval> ID STRING
@@ -46,11 +52,13 @@ void yyerror(char *s) { EM_error(EM_tokPos, "%s", s); }
 %left TIMES DIVIDE
 %left UMINUS
 
+%type <exp> exp program
+
 %start program
 
 %%
 
-program: exp
+program: exp                            { absyn_root = $1; }
 
 exp: lvalue
    | NIL
