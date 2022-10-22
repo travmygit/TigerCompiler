@@ -148,11 +148,23 @@ typedef union YYSTYPE
 	string sval;
     A_var var;
 	A_exp exp;
+    A_dec dec;
+    A_ty ty;
+    A_decList declist;
+    A_expList explist;
+    A_field field;
+    A_fieldList fieldlist;
+    A_fundec fundec;
+    A_fundecList fundeclist;
+    A_namety namety;
+    A_nametyList nametylist;
+    A_efield efield;
+    A_efieldList efieldlist;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 156 "D:\\code\\TigerCompiler\\/tiger/src/y.tab.h"
+#line 168 "D:\\code\\TigerCompiler\\/tiger/src/y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

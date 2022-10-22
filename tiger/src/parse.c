@@ -5,7 +5,9 @@
 #include "absyn.h"
 #include "errormsg.h"
 #include "parse.h"
+#include "prabsyn.h"
 
+extern FILE* yyin;
 extern int yyparse(void);
 extern A_exp absyn_root;
 
@@ -31,6 +33,14 @@ int main(int argc, char** argv)
 		fprintf(stderr, "usage: a.out filename\n");
 		exit(1);
 	}
-	parse(argv[1]);
+	A_exp result = parse(argv[1]);
+	if (result)
+	{
+		FILE* report = fopen("parse_report.c", "w");
+		if (report)
+		{
+			pr_exp(report, result, 0);
+		}
+	}
 	return 0;
 }

@@ -60,8 +60,8 @@ Grammar
 
    44 lvalue: ID
    45       | ID LBRACK exp RBRACK
-   46       | lvalue DOT ID
-   47       | lvalue LBRACK exp RBRACK
+   46       | lvalue LBRACK exp RBRACK
+   47       | lvalue DOT ID
 
    48 array_create: ID LBRACK exp RBRACK OF exp
 
@@ -106,7 +106,7 @@ Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-ID (258) 18 29 30 32 37 38 39 42 43 44 45 46 48 65 66 71
+ID (258) 18 29 30 32 37 38 39 42 43 44 45 47 48 65 66 71
 STRING (259) 6
 INT (260) 5
 COMMA (261) 36 64 70
@@ -114,11 +114,11 @@ COLON (262) 37 39 43
 SEMICOLON (263) 73
 LPAREN (264) 4 21 42 43 65
 RPAREN (265) 4 21 42 43 65
-LBRACK (266) 45 47 48
-RBRACK (267) 45 47 48
+LBRACK (266) 45 46 48
+RBRACK (267) 45 46 48
 LBRACE (268) 31 66
 RBRACE (269) 31 66
-DOT (270) 46
+DOT (270) 47
 PLUS (271) 49
 MINUS (272) 7 50
 TIMES (273) 51
@@ -161,7 +161,7 @@ program (49)
     on left: 1, on right: 0
 exp (50)
     on left: 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21, on right:
-    1 7 14 15 16 17 18 38 39 42 43 45 47 48 49 50 51 52 53 54 55 56
+    1 7 14 15 16 17 18 38 39 42 43 45 46 48 49 50 51 52 53 54 55 56
     57 58 59 60 63 64 71 72 73
 decs (51)
     on left: 22 23, on right: 20 23
@@ -450,8 +450,8 @@ state 14
 
     2 exp: lvalue .
    14    | lvalue . ASSIGN exp
-   46 lvalue: lvalue . DOT ID
-   47       | lvalue . LBRACK exp RBRACK
+   46 lvalue: lvalue . LBRACK exp RBRACK
+   47       | lvalue . DOT ID
 
     LBRACK  shift, and go to state 45
     DOT     shift, and go to state 46
@@ -1048,7 +1048,7 @@ state 44
 
 state 45
 
-   47 lvalue: lvalue LBRACK . exp RBRACK
+   46 lvalue: lvalue LBRACK . exp RBRACK
 
     ID      shift, and go to state 1
     STRING  shift, and go to state 2
@@ -1074,7 +1074,7 @@ state 45
 
 state 46
 
-   46 lvalue: lvalue DOT . ID
+   47 lvalue: lvalue DOT . ID
 
     ID  shift, and go to state 84
 
@@ -1764,7 +1764,7 @@ state 82
 
 state 83
 
-   47 lvalue: lvalue LBRACK exp . RBRACK
+   46 lvalue: lvalue LBRACK exp . RBRACK
    49 arith_exp: exp . PLUS exp
    50          | exp . MINUS exp
    51          | exp . TIMES exp
@@ -1795,9 +1795,9 @@ state 83
 
 state 84
 
-   46 lvalue: lvalue DOT ID .
+   47 lvalue: lvalue DOT ID .
 
-    $default  reduce using rule 46 (lvalue)
+    $default  reduce using rule 47 (lvalue)
 
 
 state 85
@@ -2095,9 +2095,9 @@ state 101
 
 state 102
 
-   47 lvalue: lvalue LBRACK exp RBRACK .
+   46 lvalue: lvalue LBRACK exp RBRACK .
 
-    $default  reduce using rule 47 (lvalue)
+    $default  reduce using rule 46 (lvalue)
 
 
 state 103

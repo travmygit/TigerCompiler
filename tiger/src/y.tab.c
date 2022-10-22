@@ -221,11 +221,23 @@ typedef union YYSTYPE
 	string sval;
     A_var var;
 	A_exp exp;
+    A_dec dec;
+    A_ty ty;
+    A_decList declist;
+    A_expList explist;
+    A_field field;
+    A_fieldList fieldlist;
+    A_fundec fundec;
+    A_fundecList fundeclist;
+    A_namety namety;
+    A_nametyList nametylist;
+    A_efield efield;
+    A_efieldList efieldlist;
 
 
 
 /* Line 214 of yacc.c  */
-#line 229 "D:\\code\\TigerCompiler\\/tiger/src/y.tab.c"
+#line 241 "D:\\code\\TigerCompiler\\/tiger/src/y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -237,7 +249,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 241 "D:\\code\\TigerCompiler\\/tiger/src/y.tab.c"
+#line 253 "D:\\code\\TigerCompiler\\/tiger/src/y.tab.c"
 
 #ifdef short
 # undef short
@@ -515,7 +527,7 @@ static const yytype_uint16 yyprhs[] =
       21,    23,    25,    27,    29,    31,    35,    42,    47,    52,
       61,    63,    69,    73,    74,    77,    79,    81,    83,    85,
       88,    93,    95,    99,   103,   104,   106,   108,   112,   116,
-     121,   128,   130,   133,   141,   151,   153,   158,   162,   167,
+     121,   128,   130,   133,   141,   151,   153,   158,   163,   167,
      174,   178,   182,   186,   190,   194,   198,   202,   206,   210,
      214,   218,   222,   223,   225,   227,   231,   236,   241,   242,
      244,   246,   250,   254,   256
@@ -539,8 +551,8 @@ static const yytype_int8 yyrhs[] =
       -1,    44,     3,     7,     3,    28,    50,    -1,    61,    -1,
       61,    60,    -1,    43,     3,     9,    56,    10,    20,    50,
       -1,    43,     3,     9,    56,    10,     7,     3,    20,    50,
-      -1,     3,    -1,     3,    11,    50,    12,    -1,    62,    15,
-       3,    -1,    62,    11,    50,    12,    -1,     3,    11,    50,
+      -1,     3,    -1,     3,    11,    50,    12,    -1,    62,    11,
+      50,    12,    -1,    62,    15,     3,    -1,     3,    11,    50,
       12,    40,    50,    -1,    50,    16,    50,    -1,    50,    17,
       50,    -1,    50,    18,    50,    -1,    50,    19,    50,    -1,
       50,    20,    50,    -1,    50,    21,    50,    -1,    50,    22,
@@ -555,14 +567,14 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    61,    61,    63,    64,    65,    66,    67,    68,    69,
-      70,    71,    72,    73,    74,    75,    76,    77,    78,    79,
-      80,    81,    82,    84,    85,    87,    88,    89,    91,    92,
-      94,    96,    97,    98,   100,   101,   103,   104,   106,   108,
-     109,   111,   112,   114,   115,   117,   118,   119,   120,   122,
-     124,   125,   126,   127,   129,   130,   131,   132,   133,   134,
-     136,   137,   139,   140,   142,   143,   145,   147,   149,   150,
-     152,   153,   155,   157,   158
+       0,    86,    86,    88,    89,    90,    91,    92,    93,    94,
+      95,    96,    97,    98,    99,   100,   101,   102,   103,   104,
+     105,   106,   107,   109,   110,   112,   113,   114,   116,   117,
+     119,   121,   122,   123,   125,   126,   128,   129,   131,   133,
+     134,   136,   137,   139,   140,   142,   143,   144,   145,   147,
+     149,   150,   151,   152,   154,   155,   156,   157,   158,   159,
+     161,   162,   164,   165,   167,   168,   170,   172,   174,   175,
+     177,   178,   180,   182,   183
 };
 #endif
 
@@ -618,7 +630,7 @@ static const yytype_uint8 yyr2[] =
        1,     1,     1,     1,     1,     3,     6,     4,     4,     8,
        1,     5,     3,     0,     2,     1,     1,     1,     1,     2,
        4,     1,     3,     3,     0,     1,     1,     3,     3,     4,
-       6,     1,     2,     7,     9,     1,     4,     3,     4,     6,
+       6,     1,     2,     7,     9,     1,     4,     4,     3,     6,
        3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
        3,     3,     0,     1,     1,     3,     4,     4,     0,     1,
        1,     3,     3,     1,     3
@@ -637,9 +649,9 @@ static const yytype_uint8 yydefact[] =
       63,     0,     0,     0,    69,    70,     0,    22,     0,     0,
        0,     0,     0,     0,     0,    24,    25,    28,    26,    27,
       41,    50,    51,    52,    53,    54,    55,    56,    57,    58,
-      59,    60,    61,     0,    47,    15,    66,     0,    46,     0,
+      59,    60,    61,     0,    48,    15,    66,     0,    46,     0,
       67,     0,    74,    17,    18,     0,     0,     0,     0,     0,
-      29,    42,    48,    65,     0,    72,    71,     0,     0,    21,
+      29,    42,    47,    65,     0,    72,    71,     0,     0,    21,
       34,     0,     0,     0,    49,    16,     0,     0,     0,    35,
       36,     0,    39,    31,    34,     0,    30,     0,     0,     0,
        0,     0,     0,     0,    19,    38,     0,     0,    37,    40,
@@ -1587,14 +1599,518 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 61 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+#line 86 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
     { absyn_root = (yyvsp[(1) - (1)].exp); }
+    break;
+
+  case 3:
+
+/* Line 1455 of yacc.c  */
+#line 88 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_VarExp(EM_tokPos, (yyvsp[(1) - (1)].var)); }
+    break;
+
+  case 4:
+
+/* Line 1455 of yacc.c  */
+#line 89 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_NilExp(EM_tokPos); }
+    break;
+
+  case 5:
+
+/* Line 1455 of yacc.c  */
+#line 90 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_SeqExp(EM_tokPos, NULL); }
+    break;
+
+  case 6:
+
+/* Line 1455 of yacc.c  */
+#line 91 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_IntExp(EM_tokPos, (yyvsp[(1) - (1)].ival)); }
+    break;
+
+  case 7:
+
+/* Line 1455 of yacc.c  */
+#line 92 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_StringExp(EM_tokPos, (yyvsp[(1) - (1)].sval)); }
+    break;
+
+  case 8:
+
+/* Line 1455 of yacc.c  */
+#line 93 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_OpExp(EM_tokPos, A_minusOp, A_IntExp(EM_tokPos, 0), (yyvsp[(2) - (2)].exp)); }
+    break;
+
+  case 9:
+
+/* Line 1455 of yacc.c  */
+#line 94 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = (yyvsp[(1) - (1)].exp); }
+    break;
+
+  case 10:
+
+/* Line 1455 of yacc.c  */
+#line 95 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = (yyvsp[(1) - (1)].exp); }
+    break;
+
+  case 11:
+
+/* Line 1455 of yacc.c  */
+#line 96 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = (yyvsp[(1) - (1)].exp); }
+    break;
+
+  case 12:
+
+/* Line 1455 of yacc.c  */
+#line 97 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = (yyvsp[(1) - (1)].exp); }
+    break;
+
+  case 13:
+
+/* Line 1455 of yacc.c  */
+#line 98 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = (yyvsp[(1) - (1)].exp); }
+    break;
+
+  case 14:
+
+/* Line 1455 of yacc.c  */
+#line 99 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = (yyvsp[(1) - (1)].exp); }
+    break;
+
+  case 15:
+
+/* Line 1455 of yacc.c  */
+#line 100 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_AssignExp(EM_tokPos, (yyvsp[(1) - (3)].var), (yyvsp[(3) - (3)].exp)); }
+    break;
+
+  case 16:
+
+/* Line 1455 of yacc.c  */
+#line 101 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_IfExp(EM_tokPos, (yyvsp[(2) - (6)].exp), (yyvsp[(4) - (6)].exp), (yyvsp[(6) - (6)].exp)); }
+    break;
+
+  case 17:
+
+/* Line 1455 of yacc.c  */
+#line 102 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_IfExp(EM_tokPos, (yyvsp[(2) - (4)].exp), (yyvsp[(4) - (4)].exp), NULL); }
+    break;
+
+  case 18:
+
+/* Line 1455 of yacc.c  */
+#line 103 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_WhileExp(EM_tokPos, (yyvsp[(2) - (4)].exp), (yyvsp[(4) - (4)].exp)); }
+    break;
+
+  case 19:
+
+/* Line 1455 of yacc.c  */
+#line 104 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_ForExp(EM_tokPos, S_Symbol((yyvsp[(2) - (8)].sval)), (yyvsp[(4) - (8)].exp), (yyvsp[(6) - (8)].exp), (yyvsp[(8) - (8)].exp)); }
+    break;
+
+  case 20:
+
+/* Line 1455 of yacc.c  */
+#line 105 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_BreakExp(EM_tokPos); }
+    break;
+
+  case 21:
+
+/* Line 1455 of yacc.c  */
+#line 106 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_LetExp(EM_tokPos, (yyvsp[(2) - (5)].declist), A_SeqExp(EM_tokPos, (yyvsp[(4) - (5)].explist))); }
+    break;
+
+  case 22:
+
+/* Line 1455 of yacc.c  */
+#line 107 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_SeqExp(EM_tokPos, (yyvsp[(2) - (3)].explist)); }
+    break;
+
+  case 23:
+
+/* Line 1455 of yacc.c  */
+#line 109 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.declist) = NULL; }
+    break;
+
+  case 24:
+
+/* Line 1455 of yacc.c  */
+#line 110 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.declist) = A_DecList((yyvsp[(2) - (2)].dec), (yyvsp[(1) - (2)].declist)); }
+    break;
+
+  case 25:
+
+/* Line 1455 of yacc.c  */
+#line 112 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.dec) = (yyvsp[(1) - (1)].dec); }
+    break;
+
+  case 26:
+
+/* Line 1455 of yacc.c  */
+#line 113 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.dec) = (yyvsp[(1) - (1)].dec); }
+    break;
+
+  case 27:
+
+/* Line 1455 of yacc.c  */
+#line 114 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.dec) = (yyvsp[(1) - (1)].dec); }
+    break;
+
+  case 28:
+
+/* Line 1455 of yacc.c  */
+#line 116 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.dec) = A_TypeDec(EM_tokPos, A_NametyList((yyvsp[(1) - (1)].namety), NULL)); }
+    break;
+
+  case 29:
+
+/* Line 1455 of yacc.c  */
+#line 117 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.dec) = A_TypeDec(EM_tokPos, A_NametyList((yyvsp[(1) - (2)].namety), (yyvsp[(2) - (2)].dec)->u.type)); }
+    break;
+
+  case 30:
+
+/* Line 1455 of yacc.c  */
+#line 119 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.namety) = A_Namety(S_Symbol((yyvsp[(2) - (4)].sval)), (yyvsp[(4) - (4)].ty)); }
+    break;
+
+  case 31:
+
+/* Line 1455 of yacc.c  */
+#line 121 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.ty) = A_NameTy(EM_tokPos, S_Symbol((yyvsp[(1) - (1)].sval))); }
+    break;
+
+  case 32:
+
+/* Line 1455 of yacc.c  */
+#line 122 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.ty) = A_RecordTy(EM_tokPos, (yyvsp[(2) - (3)].fieldlist)); }
+    break;
+
+  case 33:
+
+/* Line 1455 of yacc.c  */
+#line 123 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.ty) = A_ArrayTy(EM_tokPos, S_Symbol((yyvsp[(3) - (3)].sval))); }
+    break;
+
+  case 34:
+
+/* Line 1455 of yacc.c  */
+#line 125 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.fieldlist) = NULL; }
+    break;
+
+  case 35:
+
+/* Line 1455 of yacc.c  */
+#line 126 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.fieldlist) = (yyvsp[(1) - (1)].fieldlist); }
+    break;
+
+  case 36:
+
+/* Line 1455 of yacc.c  */
+#line 128 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.fieldlist) = A_FieldList((yyvsp[(1) - (1)].field), NULL); }
+    break;
+
+  case 37:
+
+/* Line 1455 of yacc.c  */
+#line 129 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.fieldlist) = A_FieldList((yyvsp[(3) - (3)].field), (yyvsp[(1) - (3)].fieldlist)); }
+    break;
+
+  case 38:
+
+/* Line 1455 of yacc.c  */
+#line 131 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.field) = A_Field(EM_tokPos, S_Symbol((yyvsp[(1) - (3)].sval)), S_Symbol((yyvsp[(3) - (3)].sval))); }
+    break;
+
+  case 39:
+
+/* Line 1455 of yacc.c  */
+#line 133 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.dec) = A_VarDec(EM_tokPos, S_Symbol((yyvsp[(2) - (4)].sval)), NULL, (yyvsp[(4) - (4)].exp)); }
+    break;
+
+  case 40:
+
+/* Line 1455 of yacc.c  */
+#line 134 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.dec) = A_VarDec(EM_tokPos, S_Symbol((yyvsp[(2) - (6)].sval)), S_Symbol((yyvsp[(4) - (6)].sval)), (yyvsp[(6) - (6)].exp)); }
+    break;
+
+  case 41:
+
+/* Line 1455 of yacc.c  */
+#line 136 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.dec) = A_FunctionDec(EM_tokPos, A_FundecList((yyvsp[(1) - (1)].fundec), NULL)); }
+    break;
+
+  case 42:
+
+/* Line 1455 of yacc.c  */
+#line 137 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.dec) = A_FunctionDec(EM_tokPos, A_FundecList((yyvsp[(1) - (2)].fundec), (yyvsp[(2) - (2)].dec)->u.function)); }
+    break;
+
+  case 43:
+
+/* Line 1455 of yacc.c  */
+#line 139 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.fundec) = A_Fundec(EM_tokPos, S_Symbol((yyvsp[(2) - (7)].sval)), (yyvsp[(4) - (7)].fieldlist), NULL, (yyvsp[(7) - (7)].exp)); }
+    break;
+
+  case 44:
+
+/* Line 1455 of yacc.c  */
+#line 140 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.fundec) = A_Fundec(EM_tokPos, S_Symbol((yyvsp[(2) - (9)].sval)), (yyvsp[(4) - (9)].fieldlist), S_Symbol((yyvsp[(7) - (9)].sval)), (yyvsp[(9) - (9)].exp)); }
+    break;
+
+  case 45:
+
+/* Line 1455 of yacc.c  */
+#line 142 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.var) = A_SimpleVar(EM_tokPos, S_Symbol((yyvsp[(1) - (1)].sval))); }
+    break;
+
+  case 46:
+
+/* Line 1455 of yacc.c  */
+#line 143 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.var) = A_SubscriptVar(EM_tokPos, A_SimpleVar(EM_tokPos, S_Symbol((yyvsp[(1) - (4)].sval))), (yyvsp[(3) - (4)].exp)); }
+    break;
+
+  case 47:
+
+/* Line 1455 of yacc.c  */
+#line 144 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.var) = A_SubscriptVar(EM_tokPos, (yyvsp[(1) - (4)].var), (yyvsp[(3) - (4)].exp)); }
+    break;
+
+  case 48:
+
+/* Line 1455 of yacc.c  */
+#line 145 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.var) = A_FieldVar(EM_tokPos, (yyvsp[(1) - (3)].var), S_Symbol((yyvsp[(3) - (3)].sval))); }
+    break;
+
+  case 49:
+
+/* Line 1455 of yacc.c  */
+#line 147 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_ArrayExp(EM_tokPos, S_Symbol((yyvsp[(1) - (6)].sval)), (yyvsp[(3) - (6)].exp), (yyvsp[(6) - (6)].exp)); }
+    break;
+
+  case 50:
+
+/* Line 1455 of yacc.c  */
+#line 149 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_OpExp(EM_tokPos, A_plusOp, (yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); }
+    break;
+
+  case 51:
+
+/* Line 1455 of yacc.c  */
+#line 150 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_OpExp(EM_tokPos, A_minusOp, (yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); }
+    break;
+
+  case 52:
+
+/* Line 1455 of yacc.c  */
+#line 151 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_OpExp(EM_tokPos, A_timesOp, (yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); }
+    break;
+
+  case 53:
+
+/* Line 1455 of yacc.c  */
+#line 152 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_OpExp(EM_tokPos, A_divideOp, (yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); }
+    break;
+
+  case 54:
+
+/* Line 1455 of yacc.c  */
+#line 154 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_OpExp(EM_tokPos, A_eqOp, (yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); }
+    break;
+
+  case 55:
+
+/* Line 1455 of yacc.c  */
+#line 155 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_OpExp(EM_tokPos, A_neqOp, (yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); }
+    break;
+
+  case 56:
+
+/* Line 1455 of yacc.c  */
+#line 156 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_OpExp(EM_tokPos, A_ltOp, (yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); }
+    break;
+
+  case 57:
+
+/* Line 1455 of yacc.c  */
+#line 157 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_OpExp(EM_tokPos, A_leOp, (yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); }
+    break;
+
+  case 58:
+
+/* Line 1455 of yacc.c  */
+#line 158 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_OpExp(EM_tokPos, A_gtOp, (yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); }
+    break;
+
+  case 59:
+
+/* Line 1455 of yacc.c  */
+#line 159 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_OpExp(EM_tokPos, A_geOp, (yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); }
+    break;
+
+  case 60:
+
+/* Line 1455 of yacc.c  */
+#line 161 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_IfExp(EM_tokPos, (yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp), A_IntExp(EM_tokPos, 0)); }
+    break;
+
+  case 61:
+
+/* Line 1455 of yacc.c  */
+#line 162 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_IfExp(EM_tokPos, (yyvsp[(1) - (3)].exp), A_IntExp(EM_tokPos, 1), (yyvsp[(3) - (3)].exp)); }
+    break;
+
+  case 62:
+
+/* Line 1455 of yacc.c  */
+#line 164 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.explist) = NULL; }
+    break;
+
+  case 63:
+
+/* Line 1455 of yacc.c  */
+#line 165 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.explist) = (yyvsp[(1) - (1)].explist); }
+    break;
+
+  case 64:
+
+/* Line 1455 of yacc.c  */
+#line 167 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.explist) = A_ExpList((yyvsp[(1) - (1)].exp), NULL); }
+    break;
+
+  case 65:
+
+/* Line 1455 of yacc.c  */
+#line 168 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.explist) = A_ExpList((yyvsp[(3) - (3)].exp), (yyvsp[(1) - (3)].explist)); }
+    break;
+
+  case 66:
+
+/* Line 1455 of yacc.c  */
+#line 170 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_CallExp(EM_tokPos, S_Symbol((yyvsp[(1) - (4)].sval)), (yyvsp[(3) - (4)].explist)); }
+    break;
+
+  case 67:
+
+/* Line 1455 of yacc.c  */
+#line 172 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.exp) = A_RecordExp(EM_tokPos, S_Symbol((yyvsp[(1) - (4)].sval)), (yyvsp[(3) - (4)].efieldlist)); }
+    break;
+
+  case 68:
+
+/* Line 1455 of yacc.c  */
+#line 174 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.efieldlist) = NULL; }
+    break;
+
+  case 69:
+
+/* Line 1455 of yacc.c  */
+#line 175 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.efieldlist) = (yyvsp[(1) - (1)].efieldlist); }
+    break;
+
+  case 70:
+
+/* Line 1455 of yacc.c  */
+#line 177 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.efieldlist) = A_EfieldList((yyvsp[(1) - (1)].efield), NULL); }
+    break;
+
+  case 71:
+
+/* Line 1455 of yacc.c  */
+#line 178 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.efieldlist) = A_EfieldList((yyvsp[(3) - (3)].efield), (yyvsp[(1) - (3)].efieldlist)); }
+    break;
+
+  case 72:
+
+/* Line 1455 of yacc.c  */
+#line 180 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.efield) = A_Efield(S_Symbol((yyvsp[(1) - (3)].sval)), (yyvsp[(3) - (3)].exp)); }
+    break;
+
+  case 73:
+
+/* Line 1455 of yacc.c  */
+#line 182 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.explist) = A_ExpList((yyvsp[(1) - (1)].exp), NULL); }
+    break;
+
+  case 74:
+
+/* Line 1455 of yacc.c  */
+#line 183 "D:\\code\\TigerCompiler\\/tiger/src/tiger.grm"
+    { (yyval.explist) = A_ExpList((yyvsp[(3) - (3)].exp), (yyvsp[(1) - (3)].explist)); }
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1598 "D:\\code\\TigerCompiler\\/tiger/src/y.tab.c"
+#line 2114 "D:\\code\\TigerCompiler\\/tiger/src/y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
